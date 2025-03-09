@@ -1,0 +1,93 @@
+agent: RMA_DATT
+env_id: traj_v3
+environment:
+  agent_name: !!python/tuple
+  - RMA_DATT
+  angular_vel:
+  - -0.05
+  - 0.05
+  env_id: traj_v3
+  episode_length: 6
+  eval: false
+  linear_vel:
+  - -0.1
+  - 0.1
+  max_wind: 2.0
+  pos_xy:
+  - -0.1
+  - 0.1
+  pos_z:
+  - -0.1
+  - 0.1
+  roll_pitch:
+  - -0.15
+  - 0.15
+  scale: true
+  scale_lengths:
+  - 0.05
+  - 0.16
+  trajectory_window: 100
+  wind_bool: true
+  wind_speed:
+  - 0.0
+  - 1.5
+eval: false
+experiment:
+  env_id: traj_v3
+  eval: false
+  grp_name: traj_v3-RMA_DATT
+  run_name: snowy-lake-170
+  seed: 15092024
+  tests: false
+  track: true
+  wandb_project_name: adapt-ICRA
+grp_name: traj_v3-RMA_DATT
+learning:
+  anneal_lr: true
+  batch_size: 65536
+  clip_coef: 0.2
+  clip_vloss: false
+  cuda: true
+  ent_coef: 0.0005
+  env_id: traj_v3
+  final_lr: 0.000224
+  gae_lambda: 0.95
+  gamma: 0.99
+  init_lr: 0.00025
+  max_grad_norm: 0.5
+  minibatch_size: 1024
+  norm_adv: true
+  num_envs: 64
+  num_iterations: 1525
+  num_minibatches: 64
+  num_steps: 1024
+  save_model: true
+  seed: 15092024
+  target_kl: null
+  test: false
+  torch_deterministic: true
+  total_timesteps: 100000000
+  update_epochs: 10
+  vf_coef: 0.5
+network:
+  adapt_time_horizon: 50
+  base_policy_layers:
+  - 64
+  - 64
+  - 64
+  env_encoder_layers:
+  - 64
+  - 64
+  env_encoder_output: 8
+  traj_encoder_output: 32
+run_name: snowy-lake-170
+scale:
+  scale: true
+  scale_lengths:
+  - 0.05
+  - 0.16
+seed: 15092024
+tests: false
+warm_model: null
+warm_start: false
+wind_bool: true

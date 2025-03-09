@@ -1,0 +1,63 @@
+method: bayes
+name: wandb_sweep
+metric:
+  goal: maximize
+  name: charts/episodic_return
+# Nested parameters name required by WandB API
+parameters:
+  learning:
+    parameters:
+      init_lr: {
+        'distribution': 'log_uniform_values',
+        'min': 1e-5,
+        'max': 1e-1,
+      }
+      final_lr: {
+        'distribution': 'log_uniform_values',
+        'min': 1e-5,
+        'max': 1e-1,
+      }
+      anneal_lr: {
+        'values': [True, False],
+      }
+      gamma: {
+        'distribution': 'uniform',
+        'min': 0.0,
+        'max': 1.0,
+      }
+      gae_lambda: {
+            'distribution': 'uniform',
+            'min': 0.0,
+            'max': 1.0,
+      }
+      update_epochs: {
+            'distribution': 'uniform',
+            'min': 1,
+            'max': 16,
+      }
+      clip_coef: {
+            'distribution': 'uniform',
+            'min': 0.0,
+            'max': 1.0,
+      }
+      vf_coef: {
+            'distribution': 'uniform',
+            'min': 0.0,
+            'max': 1.0,
+      }
+      max_grad_norm: {
+            'distribution': 'uniform',
+            'min': 0.0,
+            'max': 10.0,
+      }
+      ent_coef: {
+            'distribution': 'log_uniform_values',
+            'min': 1e-4,
+            'max': 5e-2,
+      }
+      num_steps: {
+            'values': [64, 128, 256, 512, 1024],
+      }
+      num_minibatches: {
+            'values': [2, 4, 8, 16, 64, 128, 256, 512],
+      }
