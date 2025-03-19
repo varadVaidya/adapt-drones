@@ -2,6 +2,10 @@
 
 DOCKER file with training will be up soon. For evaluation, please follow the instructions below.
 
+
+## Video Link
+The supplementary video with hardware demonstration is available [here](https://www.youtube.com/watch?v=uZMfvKfr6Lg)
+
 ## Evaluation
 To run the evaulation of the policy, run the following command:
 ```
