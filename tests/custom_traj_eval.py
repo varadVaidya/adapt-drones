@@ -18,6 +18,8 @@ from adapt_drones.utils.trajectory import (
     lissajous_3d_with_smooth_start,
     random_trajectory,
     random_straight_trajectory,
+    satellite_orbit,
+    loop_trajectory,
 )
 
 # check_git_clean()  # TODO: see if needed in eval
@@ -56,6 +58,17 @@ branch_name = "runs/" + cfg.experiment.grp_name + "/" + args.run_name
 # checkout to the run tag
 # subprocess.check_output(["git", "checkout", branch_name])
 
+# reference_traj = satellite_orbit(radius=2.0, loops=10, total_time=60.0)
+reference_traj = loop_trajectory(
+    discretization_dt=0.01,
+    radius=2.5,
+    z=1.5,
+    lin_acc=0.75,
+    clockwise=True,
+    yawing=False,
+    v_max=4.0,
+)
+
 # reference_traj = lissajous_3d_with_smooth_start(
 #     A=2.0,
 #     B=2.5,
@@ -67,7 +80,7 @@ branch_name = "runs/" + cfg.experiment.grp_name + "/" + args.run_name
 #     total_time=120.0,
 # )
 
-reference_traj = random_straight_trajectory(seed=cfg.seed, total_time=30.0)
+# reference_traj = random_straight_trajectory(seed=cfg.seed, total_time=30.0)
 custom_traj_eval(cfg=cfg, best_model=True, reference_traj=reference_traj)
 
 

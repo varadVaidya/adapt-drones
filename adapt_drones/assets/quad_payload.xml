@@ -56,7 +56,7 @@
         <site name="end1" pos="0 0 -0.02" size="0.01"/>
       </body>
       <body pos="0.0 0.0 0.9">
-      <inertial mass="0.1" diaginertia="0.000010417 0.000010417 0.000010417" pos="0 0 0"/>
+      <inertial mass="0.150" diaginertia="0.000010417 0.000010417 0.000010417" pos="0 0 0"/>
         <joint type="free"/>
         <geom size="0.025 0.025 0.025" type="box"/>
         <site name="end2" pos="0 0 0.025" size="0.01"/>
@@ -82,7 +82,7 @@
       <framequat name="body_quat" objtype="site" objname="imu"/>
     </sensor>
     <tendon>
-      <spatial limited="true" range="0 1" width="0.005">
+      <spatial limited="true" range="0 0.75" width="0.005">
         <site site="end1"/>
         <site site="end2"/>
       </spatial>

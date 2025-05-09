@@ -651,11 +651,14 @@ def satellite_orbit(radius=1.0, loops=3, total_time=10.0, dt=0.01):
     y = radius * np.sin(theta)
     z = radius * np.cos(theta) * np.cos(phi)
 
-    z += 1.0
+    z += np.abs(z.min()) + 0.15
+    # Ensure z is above the ground
 
     position = np.vstack((x, y, z)).T
     velocity = np.gradient(position, axis=0) / dt
     acceleration = np.gradient(velocity, axis=0) / dt
+    print(f"Max Acceleration: {np.max(np.linalg.norm(acceleration, axis=1))}")
+    print(f"Max Velocity: {np.max(np.linalg.norm(velocity, axis=1))}")
     jerk = np.gradient(acceleration, axis=0) / dt
 
     traj_derivatives = np.stack(
