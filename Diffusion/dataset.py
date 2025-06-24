@@ -1,5 +1,3 @@
-# dataset.py
-
 import os
 import pickle
 import random
