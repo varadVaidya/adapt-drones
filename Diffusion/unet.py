@@ -48,6 +48,7 @@ class Conv1dBlock(nn.Module):
             nn.GroupNorm(n_groups, out_channels),
             nn.Mish(),
         )
+    
 
     def forward(self, x):
         return self.block(x)
@@ -94,8 +95,8 @@ class ConditionalUnet1D(nn.Module):
     def __init__(self,
         input_dim,
         global_cond_dim,
-        diffusion_step_embed_dim=256,
-        down_dims=[256,512,1024],
+        diffusion_step_embed_dim=16, #Dimesions as mentioned in Drone Diffusion paper
+        down_dims=[64,128,256], #[256,512,1024],
         kernel_size=5,
         n_groups=8
         ):
@@ -103,13 +104,22 @@ class ConditionalUnet1D(nn.Module):
         all_dims = [input_dim] + list(down_dims)
         start_dim = down_dims[0]
         dsed = diffusion_step_embed_dim
-        diffusion_step_encoder = nn.Sequential(
+        self.diffusion_step_encoder = nn.Sequential(
             SinusoidalPosEmb(dsed),
             nn.Linear(dsed, dsed * 4),
             nn.Mish(),
             nn.Linear(dsed * 4, dsed),
         )
-        cond_dim = dsed + global_cond_dim
+        
+        #Global condition encoder from Drone Diffusion
+        self.global_cond_encoder = nn.Sequential(
+            nn.Linear(global_cond_dim, 64),
+            nn.Mish(),
+            nn.Linear(64, 16),
+            nn.Mish(),
+        )
+
+        cond_dim = dsed + 16
         in_out = list(zip(all_dims[:-1], all_dims[1:]))
         mid_dim = all_dims[-1]
         self.mid_modules = nn.ModuleList([
@@ -136,7 +146,6 @@ class ConditionalUnet1D(nn.Module):
             Conv1dBlock(start_dim, start_dim, kernel_size=kernel_size),
             nn.Conv1d(start_dim, input_dim, 1),
         )
-        self.diffusion_step_encoder = diffusion_step_encoder
         self.up_modules = up_modules
         self.down_modules = down_modules
         self.final_conv = final_conv
@@ -152,7 +161,8 @@ class ConditionalUnet1D(nn.Module):
         timesteps = timesteps.expand(sample.shape[0])
         global_feature = self.diffusion_step_encoder(timesteps)
         if global_cond is not None:
-            global_feature = torch.cat([global_feature, global_cond], axis=-1)
+            cond_embedding = self.global_cond_encoder(global_cond)
+            global_feature = torch.cat([global_feature, cond_embedding], dim=-1)
         x = sample
         h = []
         for resnet, resnet2, downsample in self.down_modules:

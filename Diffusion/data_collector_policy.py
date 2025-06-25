@@ -25,7 +25,7 @@ class Args:
     wind_bool: bool = True
     seed: int = -1
     arm_length: float = 0.125
-    total_timesteps: int = 50000
+    total_timesteps: int = 250000
     output_path: str = "data/snowy-lake-170_dataset_aligned.npz"
     save_csv: bool = False
 
