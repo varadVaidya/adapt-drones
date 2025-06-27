@@ -120,7 +120,7 @@ class TrajAviaryv2Config:
         self.scale_lengths = [0.05, 0.16] if self.scale else [0.05, 0.05]
 
         trajectory_path = pkg_resources.resource_filename(
-            "adapt_drones", "assets/crazy_trajs_train.npy"
+            "adapt_drones", "assets/crazy_trajs_eval.npy"
         )
         self.trajectory_dataset = np.load(trajectory_path)
         self.eval_trajectory_path = pkg_resources.resource_filename(
@@ -176,13 +176,12 @@ class TrajAviaryv3Config:
         self.max_wind = self.max_wind if self.wind_bool else 0.0
 
         trajectory_path = pkg_resources.resource_filename(
-            "adapt_drones", "assets/slow_pi_tcn_train.npy"
+            "adapt_drones", "assets/slow_pi_tcn_eval.npy"
         )
         self.trajectory_dataset = np.load(trajectory_path, allow_pickle=True)
         self.eval_trajectory_path = pkg_resources.resource_filename(
             "adapt_drones", "assets/slow_pi_tcn_eval.npy"
         )
-
 
 @dataclass
 class TrajAviaryPayv3Config:
@@ -232,7 +231,7 @@ class TrajAviaryPayv3Config:
         self.max_wind = self.max_wind if self.wind_bool else 0.0
 
         trajectory_path = pkg_resources.resource_filename(
-            "adapt_drones", "assets/slow_pi_tcn_train.npy"
+            "adapt_drones", "assets/slow_pi_tcn_eval.npy"
         )
         self.trajectory_dataset = np.load(trajectory_path, allow_pickle=True)
         self.eval_trajectory_path = pkg_resources.resource_filename(
@@ -281,7 +280,7 @@ class TrajAviaryv2CTBRConfig:
         )
         self.trajectory_dataset = np.load(trajectory_path)
         self.eval_trajectory_path = pkg_resources.resource_filename(
-            "adapt_drones", "assets/crazy_trajs_eval.npy"
+            "adapt_drones", "assets/crazy_trajs_train.npy"
         )
 
 

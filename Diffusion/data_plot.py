@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load dataset
-data = np.load("data/snowy-lake-170_dataset_aligned.npz")
+data = np.load("data/slow_tcn_train_diff_dataset.npz")
 position = data["position"]
 velocity = data["velocity"]
 acceleration = data["acceleration"]

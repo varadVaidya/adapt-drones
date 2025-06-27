@@ -15,12 +15,15 @@ from dataset import create_train_val_dataloaders
 from unet import ConditionalUnet1D
 
 # --- Configuration & Hyperparameters ---
-# Data parameters
-DATA_PATH = 'data/snowy-lake-170_dataset_aligned.npz'
+# Data parameters (MODIFIED)
+# Provide separate paths for your training and validation data files.
+TRAIN_DATA_PATH = 'data/slow_tcn_train_diff_dataset.npz'
+VAL_DATA_PATH = 'data/slow_tcn_eval_diff_dataset.npz'
+
 SCALER_DIR = 'scalers/'
 OBS_HORIZON = 4
 PRED_HORIZON = 8
-VAL_SPLIT_RATIO = 0.15 # Use 15% of trajectories for validation
+# VAL_SPLIT_RATIO is no longer needed as data is pre-split.
 
 # Model dimensions
 STATE_DIM = 10
@@ -29,28 +32,36 @@ RESIDUAL_DIM = 3
 GLOBAL_COND_DIM = OBS_HORIZON * (STATE_DIM + ACTION_DIM)
 
 # Training parameters
-NUM_EPOCHS = 100
+NUM_EPOCHS = 1000
 BATCH_SIZE = 256 # Adjust based on your GPU memory
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 2e-4
 WEIGHT_DECAY = 1e-6
-NUM_DIFFUSION_TIMESTEPS = 1000
+NUM_DIFFUSION_TIMESTEPS = 20
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
+# --- Check if data files exist ---
+if not os.path.exists(TRAIN_DATA_PATH) or not os.path.exists(VAL_DATA_PATH):
+    print("\nERROR: Training or validation data file not found.")
+    print(f"Please make sure the following files exist:")
+    print(f" - Training data: '{TRAIN_DATA_PATH}'")
+    print(f" - Validation data: '{VAL_DATA_PATH}'")
+    exit() # Exit the script if data is missing
 
-# --- Data Loading with Train/Val Split ---
+# --- Data Loading with separate Train/Val files (MODIFIED) ---
 train_dataloader, val_dataloader, scalers = create_train_val_dataloaders(
-    dataset_path=DATA_PATH,
+    train_dataset_path=TRAIN_DATA_PATH,  # Use the new argument
+    val_dataset_path=VAL_DATA_PATH,      # Use the new argument
     obs_horizon=OBS_HORIZON,
     pred_horizon=PRED_HORIZON,
     batch_size=BATCH_SIZE,
-    val_split_ratio=VAL_SPLIT_RATIO,
     scaler_dir=SCALER_DIR
+    # val_split_ratio is removed
 )
 
 
-# --- Model, Optimizer, and Scheduler Setup ---
+# --- Model, Optimizer, and Scheduler Setup (NO CHANGES NEEDED) ---
 print("Setting up model and optimizer...")
 # The U-Net that predicts noise
 noise_pred_net = ConditionalUnet1D(
@@ -84,8 +95,7 @@ lr_scheduler = get_scheduler(
 )
 
 
-
-# --- Training & Validation Loop ---
+# --- Training & Validation Loop (NO CHANGES NEEDED) ---
 
 print("Starting training...")
 best_val_loss = float('inf')
@@ -131,7 +141,7 @@ with tqdm(range(NUM_EPOCHS), desc='Epoch') as tglobal:
         
         avg_train_loss = np.mean(epoch_train_loss)
 
-        #VALIDATION PHASE
+        # VALIDATION PHASE
         noise_pred_net.eval()
         epoch_val_loss = []
         with torch.no_grad():

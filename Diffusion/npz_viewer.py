@@ -1,24 +1,24 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
-# Load the file
-data = np.load("/home/shyam/Desktop/IISc/adapt-drones/data/snowy-lake-170_dataset_aligned.npz")
+# Load the .npy files
+traj1 = np.load("adapt_drones/assets/slow_pi_tcn_train.npy")
+traj2 = np.load("adapt_drones/assets/slow_pi_tcn_eval.npy")  # Change to your second file
 
-# Show all keys
-print("Keys in file:", list(data.keys()))
-print()
+# Get the first trajectory from each
+first_traj1 = traj1[4]
+first_traj2 = traj2[4]
 
-# Print first 20 rows of each array
-for key in data.files:
-    arr = data[key]
-    print(f"Key: {key}")
-    print(f"Shape: {arr.shape}, Dtype: {arr.dtype}")
-    
-    # Print first 20 rows, or full array if smaller
-    if arr.ndim == 0:
-        # Scalar value
-        print(arr)
-    elif arr.ndim == 1:
-        print(arr[:5])
-    elif arr.ndim >= 2:
-        print(arr[:5])  # Will print first 5 rows
-    print()
+# Assuming each trajectory is (length, 3) for (x, y, z)
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+ax.plot(first_traj1[:, 0], first_traj1[:, 1], first_traj1[:, 2], label='File 1')
+ax.plot(first_traj2[:, 0], first_traj2[:, 1], first_traj2[:, 2], label='File 2')
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.legend()
+plt.show()

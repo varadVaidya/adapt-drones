@@ -24,9 +24,8 @@ class Args:
     env_id: str = "traj_v3"
     wind_bool: bool = True
     seed: int = -1
-    arm_length: float = 0.125
-    total_timesteps: int = 250000
-    output_path: str = "data/snowy-lake-170_dataset_aligned.npz"
+    total_timesteps: int = 50000
+    output_path: str = "data/slow_tcn_eval_diff_dataset.npz"
     save_csv: bool = False
 
 def collect_data():
@@ -45,21 +44,26 @@ def collect_data():
         agent="RMA_DATT", scale=True, wind_bool=args.wind_bool
     )
 
-    L = args.arm_length
-    avg_mass = np.polyval(cfg_for_laws.scale.avg_mass_fit, L)
-    std_mass = 3 * np.polyval(cfg_for_laws.scale.std_mass_fit, L)
-    std_mass = 0.0 if std_mass < 0.0 else std_mass
+    # # Define arm length mean and std, and sample per episode
+    # arm_length_mean = args.arm_length  # Get mean arm length from args
+    # arm_length_std = (0.15 - 0.10) / 6  # 3-sigma covers [0.10, 0.15]
+    # L = np.random.normal(arm_length_mean, arm_length_std)
+    # L = np.clip(L, 0.10, 0.15)  # Ensure within bounds
 
-    nominal_mass = avg_mass
-    mass_range = (max(0, avg_mass - std_mass), avg_mass + std_mass)
+    # avg_mass = np.polyval(cfg_for_laws.scale.avg_mass_fit, L)
+    # std_mass = 3 * np.polyval(cfg_for_laws.scale.std_mass_fit, L)
+    # std_mass = 0.0 if std_mass < 0.0 else std_mass
+
+    # nominal_mass = avg_mass
+    # mass_range = (max(0, avg_mass - std_mass), avg_mass + std_mass)
 
     print("--- Data Collection for DroneDiffusion ---")
     print(f"Aligning data to predict H(t) from state(t) and action(t-1)")
     print(f"Using expert policy: 'snowy-lake-170'")
-    print(f"Using manually specified arm length: {L:.3f} m")
-    print(f"Calculated average mass: {avg_mass:.3f} kg, std: {std_mass:.3f} kg")
-    print(f"Sampling random mass per episode from range: ({mass_range[0]:.3f}, {mass_range[1]:.3f}) kg")
-    print(f"Using FIXED nominal mass (m_hat) for H calculation: {nominal_mass:.3f} kg")
+    # print(f"Sampled arm length: {:.3f} m (mean: {arm_length_mean:.3f}, std: {arm_length_std:.3f})")
+    # print(f"Calculated average mass: {avg_mass:.3f} kg, std: {std_mass:.3f} kg")
+    # print(f"Sampling random mass per episode from range: ({mass_range[0]:.3f}, {mass_range[1]:.3f}) kg")
+    # print(f"Using FIXED nominal mass (m_hat) for H calculation: {nominal_mass:.3f} kg")
 
     cfg_for_env = Config(
         env_id=args.env_id, seed=args.seed,
@@ -139,7 +143,7 @@ def collect_data():
         world_frame_thrust_t = rot_mat_t @ np.array([0, 0, total_thrust_magnitude_t])
 
         # This is the residual dynamics at time t, H(t). This is your model's TARGET.
-        residual_dynamics_t = world_frame_thrust_t - nominal_mass * accel_t
+        residual_dynamics_t = world_frame_thrust_t - env.unwrapped.avg_mass * accel_t
 
         # === Log the fully aligned data row ===
         # We have state(t), action(t-1), and H(t) all available now.
@@ -169,6 +173,10 @@ def collect_data():
             state_action_buffer.zero_()
             prev_action.zero_()
 
+            # After env.reset(), print the sampled arm length and mass from the environment
+            print(f"[data_collector_policy] Env sampled arm length: {env.unwrapped.arm_length:.3f} m, "
+                  f"Env sampled mass: {env.unwrapped.model.body_mass[env.unwrapped.drone_id]:.3f} kg, "
+                  f"Env average mass: {env.unwrapped.avg_mass:.3f} kg")
     env.close()
 
     print("\nData collection finished. Converting and saving...")
@@ -201,9 +209,9 @@ def collect_data():
         df.to_csv(csv_path, index=False)
         print(f"Saved CSV to {csv_path}")
 
-    dataset_dict['nominal_mass'] = nominal_mass
-    dataset_dict['arm_length'] = args.arm_length
-    
+    dataset_dict['nominal_mass'] = env.unwrapped.avg_mass
+    dataset_dict['arm_length'] = env.unwrapped.arm_length  # Save the actual sampled arm length
+
     output_dir = os.path.dirname(args.output_path)
     if not os.path.exists(output_dir) and output_dir != '':
         os.makedirs(output_dir)

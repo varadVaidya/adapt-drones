@@ -381,11 +381,12 @@ class TrajAviaryv3(BaseAviary):
         if options is None:
             # arm length
             _arm_length = self.cfg.scale.scale_lengths
-            self.arm_length = self.np_random.uniform(_arm_length[0], _arm_length[1])
+            self.arm_length = self.np_random.uniform(0.10, 0.15)
             L = self.arm_length
 
             # mass
             _mass_avg = np.polyval(self.cfg.scale.avg_mass_fit, L)
+            self.avg_mass = _mass_avg  # Store the average mass
             _mass_std = np.polyval(self.cfg.scale.std_mass_fit, L)
             _mass_std = 0.0 if _mass_std < 0.0 else _mass_std
 
@@ -543,6 +544,7 @@ class TrajAviaryv3(BaseAviary):
             reference_velocity = vel[:duration, :]
 
             return t, reference_position, reference_velocity
+
 
     def housekeeping(self):
         """

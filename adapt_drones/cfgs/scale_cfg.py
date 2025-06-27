@@ -18,25 +18,19 @@ class Scale:
         self.avg_ixx_fit = np.array(
             [5.5211e01, -1.5131e01, 2.7314e00, -2.0660e-01, 7.1531e-03, -9.2833e-05]
         )
-        self.std_ixx_fit = np.array(
-            [2.7843e01, -9.8623e00, 2.2186e00, -2.2685e-01, 1.0597e-02, -1.8536e-04]
-        )
+        self.std_ixx_fit = np.zeros(6)  # Set std to 0
 
         # iyy fit
         self.avg_iyy_fit = np.array(
             [5.5211e01, -1.5131e01, 2.7314e00, -2.0660e-01, 7.1531e-03, -9.2833e-05]
         )
-        self.std_iyy_fit = np.array(
-            [2.7843e01, -9.8623e00, 2.2186e00, -2.2685e-01, 1.0597e-02, -1.8536e-04]
-        )
+        self.std_iyy_fit = np.zeros(6)  # Set std to 0
 
         # izz fit
         self.avg_izz_fit = np.array(
             [1.1543e02, -3.7899e01, 6.8413e00, -5.1748e-01, 1.7916e-02, -2.3252e-04]
         )
-        self.std_izz_fit = np.array(
-            [8.7295e01, -4.2189e01, 9.2968e00, -9.1877e-01, 4.1948e-02, -7.2329e-04]
-        )
+        self.std_izz_fit = np.zeros(6)  # Set std to 0
 
         # km_kf fit
         self.avg_km_kf_fit = np.array([1.4044e-01, -5.6717e-03])
