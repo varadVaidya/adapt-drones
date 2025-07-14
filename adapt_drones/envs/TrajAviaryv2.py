@@ -10,7 +10,7 @@ from adapt_drones.envs.BaseAviary import BaseAviary
 from adapt_drones.cfgs.config import Config
 import adapt_drones.utils.rotation as rotation
 import adapt_drones.utils.rewards as rewards
-import adapt_drones.utils.visuals as visuals
+import adapt_drones.utils.visuals
 
 
 class TrajAviaryv2(BaseAviary):
@@ -413,15 +413,14 @@ class TrajAviaryv2(BaseAviary):
         Assumes that eval is set by the config file
 
         Args:
-        durattion: int: The duration of the evaluation in seconds. Duration is ignored in
+        duration: int: The duration of the evaluation in seconds. Duration is ignored in
         this environment.
         """
 
         eval_trajs = np.load(self.eval_trajectory_path)
 
-        idx = self.np_random.integers(0, eval_trajs.shape[0])
+        idx = 4  # Always use the 5th trajectory (index 4)
         eval_traj = eval_trajs[idx]
-        # print("eval traj", eval_traj.shape)
         self.reference_trajectory = eval_traj
         self._kinematics_reset()
         duration = eval_traj.shape[0] - (self.trajectory_window + 1)

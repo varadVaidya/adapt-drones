@@ -199,3 +199,5 @@ experiments/exp_traj/results-xadapt/
 tests/dna.py
 tests/star_wars.py
 tests/star.py
+data/
+models/
