@@ -24,7 +24,7 @@ class Args:
     env_id: str = "traj_v3"
     wind_bool: bool = True
     seed: int = -1
-    total_timesteps: int = 50000
+    total_timesteps: int = 100000
     output_path: str = "data/slow_tcn_eval_diff_dataset.npz"
     save_csv: bool = False
 
@@ -47,8 +47,8 @@ def collect_data():
     # # Define arm length mean and std, and sample per episode
     # arm_length_mean = args.arm_length  # Get mean arm length from args
     # arm_length_std = (0.15 - 0.10) / 6  # 3-sigma covers [0.10, 0.15]
-    # L = np.random.normal(arm_length_mean, arm_length_std)
-    # L = np.clip(L, 0.10, 0.15)  # Ensure within bounds
+        # L = np.random.normal(arm_length_mean, arm_length_std)
+        # L = np.clip(L, 0.10, 0.15)  # Ensure within bounds
 
     # avg_mass = np.polyval(cfg_for_laws.scale.avg_mass_fit, L)
     # std_mass = 3 * np.polyval(cfg_for_laws.scale.std_mass_fit, L)

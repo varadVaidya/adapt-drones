@@ -22,7 +22,7 @@ VAL_DATA_PATH = 'data/slow_tcn_eval_diff_dataset.npz'
 
 SCALER_DIR = 'scalers/'
 OBS_HORIZON = 4
-PRED_HORIZON = 8
+PRED_HORIZON = 5
 # VAL_SPLIT_RATIO is no longer needed as data is pre-split.
 
 # Model dimensions
@@ -36,7 +36,7 @@ NUM_EPOCHS = 1000
 BATCH_SIZE = 256 # Adjust based on your GPU memory
 LEARNING_RATE = 2e-4
 WEIGHT_DECAY = 1e-6
-NUM_DIFFUSION_TIMESTEPS = 20
+NUM_DIFFUSION_TIMESTEPS = 100
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -98,10 +98,9 @@ lr_scheduler = get_scheduler(
 # --- Training & Validation Loop (NO CHANGES NEEDED) ---
 
 print("Starting training...")
-best_val_loss = float('inf')
+best_train_loss = float('inf')
 MODELS_DIR = "models"
 os.makedirs(MODELS_DIR, exist_ok=True)
-
 
 with tqdm(range(NUM_EPOCHS), desc='Epoch') as tglobal:
     for epoch_idx in tglobal:
@@ -163,14 +162,13 @@ with tqdm(range(NUM_EPOCHS), desc='Epoch') as tglobal:
         avg_val_loss = np.mean(epoch_val_loss)
         tglobal.set_postfix(train_loss=f"{avg_train_loss:.4f}", val_loss=f"{avg_val_loss:.4f}")
 
-        # --- Save the best model based on validation loss ---
-        if avg_val_loss < best_val_loss:
-            best_val_loss = avg_val_loss
-            # Copy the EMA parameters to the model before saving
+        # --- Save the model if train loss improves ---
+        if avg_train_loss < best_train_loss:
+            best_train_loss = avg_train_loss
             ema.copy_to(noise_pred_net.parameters())
             torch.save(noise_pred_net.state_dict(), os.path.join(MODELS_DIR, "diffusion_unet_ema_best.pt"))
-            print(f"Epoch {epoch_idx+1}: New best model saved with val_loss: {best_val_loss:.4f}")
+            print(f"Epoch {epoch_idx+1}: New best model saved with train_loss: {best_train_loss:.4f}")
 
 print("\nTraining complete.")
-print(f"Best validation loss achieved: {best_val_loss:.4f}")
+print(f"Best training loss achieved: {best_train_loss:.4f}")
 print(f"Best model saved to {os.path.join(MODELS_DIR, 'diffusion_unet_ema_best.pt')}")
