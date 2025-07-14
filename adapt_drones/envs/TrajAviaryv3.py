@@ -218,8 +218,8 @@ class TrajAviaryv3(BaseAviary):
     def reference_trajectory_reset(self):
         # reference trajectory headers:
         # "time,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z,w_x,w_y,w_z"
-        traj_index = self.np_random.integers(0, self.trajectory_dataset.shape[0])
-        return self.trajectory_dataset[traj_index]
+        # traj_index = self.np_random.integers(0, self.trajectory_dataset.shape[0])
+        return self.trajectory_dataset[2]
 
     def get_dynamics_info(self):
         """Returns the dynamics information of the drone
