@@ -229,6 +229,11 @@ def ppo_train(args: Config, envs):
                                 info["close_distance_reward"],
                                 global_step,
                             )
+                            writer.add_scalar(
+                                "rewards/closest_distance",
+                                info["closest_distance_reward"],
+                                global_step,
+                            )
 
                             plot_once_iter = False
 
