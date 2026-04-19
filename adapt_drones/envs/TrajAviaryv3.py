@@ -248,7 +248,7 @@ class TrajAviaryv3(BaseAviary):
         norm_action = np.linalg.norm(np.diff(self.action_buffer, axis=0))
 
         distance_reward = rewards.tolerance(
-            norm_position, bounds=(-isclose, isclose), margin=1.0
+            norm_position, bounds=(-isclose, isclose), margin=0.75
         )
 
         close_distance_reward = rewards.tolerance(
