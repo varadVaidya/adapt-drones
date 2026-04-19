@@ -13,35 +13,19 @@ from adapt_drones.cfgs.config import Config
 
 
 class AdaptationNetwork(nn.Module):
-    def __init__(self, input_dim, output_dim, mlp_hidden=128):
+    def __init__(self, input_dim, output_dim):
         super().__init__()
-
-        # MLP for initial feature extraction
-        self.mlp = nn.Sequential(
-            nn.Linear(6016, mlp_hidden),
-            nn.ReLU(),
-            nn.Linear(mlp_hidden, mlp_hidden),
-            nn.ReLU(),
-            nn.Linear(mlp_hidden, mlp_hidden),
-            nn.ReLU(),
-        )
-
-        # 3-layer 1D CNN
-        self.conv1 = nn.Conv1d(1, 64, kernel_size=8, stride=4)
-        self.conv2 = nn.Conv1d(64, 64, kernel_size=5, stride=2)
-        self.conv3 = nn.Conv1d(64, 64, kernel_size=5, stride=1)
-
-        self.linear = nn.Linear(128, output_dim)
+        self.conv1 = nn.Conv1d(1, 4, kernel_size=8, stride=4)
+        self.conv2 = nn.Conv1d(4, 4, kernel_size=5, stride=2)
+        self.pool = nn.AdaptiveAvgPool1d(4)
+        self.linear = nn.Linear(4 * 4, output_dim)
 
     def forward(self, x):
-        x = x.unsqueeze(1)  # add a channel dimension
-        x = torch.relu(self.conv1(x))  # first CNN
-        x = torch.relu(self.conv2(x))  # second CNN
-        x = torch.relu(self.conv3(x))  # third CNN
-
-        x = x.view(x.size(0), -1)  # flatten the output
-        x = self.mlp(x)
-
+        x = x.unsqueeze(1)
+        x = torch.relu(self.conv1(x))
+        x = torch.relu(self.conv2(x))
+        x = self.pool(x)
+        x = x.view(x.size(0), -1)
         return self.linear(x)
 
 

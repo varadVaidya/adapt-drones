@@ -36,32 +36,19 @@ class TrajectoryEncoder(nn.Module):
     Each 1-D convolution has 16 filters with a kernel size of 3
     """
 
-    def __init__(self, input_size, output_size=32):
+    def __init__(self, input_size, output_size=4):
         super(TrajectoryEncoder, self).__init__()
-        self.conv1 = nn.Conv1d(1, 32, kernel_size=3, stride=1)
-        self.conv2 = nn.Conv1d(32, 32, kernel_size=3, stride=1)
-        self.conv3 = nn.Conv1d(32, 32, kernel_size=3, stride=1)
-
-        # do a forward pass to calculate the input dimension of the linear layer
-        with torch.no_grad():
-            x = torch.as_tensor(torch.randn(1, input_size))
-            x = x.unsqueeze(1)
-            x = torch.relu(self.conv1(x))
-            x = torch.relu(self.conv2(x))
-            x = torch.relu(self.conv3(x))
-            linear_input_dim = x.view(x.size(0), -1).shape[1]
-
-        self.linear = nn.Linear(linear_input_dim, output_size)
+        self.conv1 = nn.Conv1d(1, 4, kernel_size=3, stride=2)
+        self.conv2 = nn.Conv1d(4, 4, kernel_size=3, stride=2)
+        self.pool = nn.AdaptiveAvgPool1d(4)
+        self.linear = nn.Linear(4 * 4, output_size)
 
     def forward(self, x):
-        x = x.unsqueeze(1)  # add a channel dimension
-
-        x = torch.relu(self.conv1(x))  # first CNN
-        x = torch.relu(self.conv2(x))  # second CNN
-        x = torch.relu(self.conv3(x))  # third CNN
-
-        x = x.flatten(start_dim=1)  # flatten the output
-
+        x = x.unsqueeze(1)
+        x = torch.relu(self.conv1(x))
+        x = torch.relu(self.conv2(x))
+        x = self.pool(x)
+        x = x.flatten(start_dim=1)
         return self.linear(x)
 
 

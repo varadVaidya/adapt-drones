@@ -16,7 +16,7 @@ from adapt_drones.utils.learning import layer_init
 class SimpleActorCritic(nn.Module):
     def __init__(self, state_shape, action_shape):
         super(SimpleActorCritic, self).__init__()
-        base_policy_layers = [64, 64, 64]
+        base_policy_layers = [4, 4]
         base_policy_input_size = np.prod(state_shape)
 
         self.critic = Critic(base_policy_input_size, *base_policy_layers, output_size=1)
@@ -50,14 +50,12 @@ class RMA(nn.Module):
         super(RMA, self).__init__()
         # self.env_encoder_input_size = envs.get_attr("priv_info_shape")[0]
         self.env_encoder_input_size = priv_info_shape
-        # self.state_obs_shape = envs.get_attr("state_obs_shape")[0]
         self.state_obs_shape = state_obs_shape
-        env_encoder_output_size = 6
-        env_encoder_layers = [64, 64]
+        env_encoder_output_size = 4
+        env_encoder_layers = [8]
 
-        # both actor and critic share the same base policy architecture
         base_policy_input_size = env_encoder_output_size + self.state_obs_shape
-        base_policy_layers = [64, 64, 64]
+        base_policy_layers = [4, 4]
 
         actor_input = env_encoder_output_size + self.state_obs_shape
         actor_output = np.prod(action_shape)
@@ -121,19 +119,17 @@ class RMA_DATT(nn.Module):
         super(RMA_DATT, self).__init__()
         # self.env_encoder_input_size = envs.get_attr("priv_info_shape")[0]
         self.priv_info_shape = priv_info_shape
-        # self.state_obs_shape = envs.get_attr("state_obs_shape")[0]
         self.state_obs_shape = state_shape
         self.traj_encoder_input_size = traj_shape
 
-        env_encoder_output_size = 8
-        traj_encoder_output_size = 32
-        env_encoder_layers = [64, 64]
+        env_encoder_output_size = 4
+        traj_encoder_output_size = 4
+        env_encoder_layers = [8]
 
-        # both actor and critic share the same base policy architecture
         base_policy_input_size = (
             env_encoder_output_size + self.state_obs_shape + traj_encoder_output_size
         )
-        base_policy_layers = [64, 64, 64]
+        base_policy_layers = [4, 4]
 
         actor_input = base_policy_input_size
         actor_output = np.prod(action_shape)

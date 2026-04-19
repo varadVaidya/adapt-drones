@@ -379,9 +379,8 @@ class TrajAviaryv3(BaseAviary):
         """
 
         if options is None:
-            # arm length
-            _arm_length = self.cfg.scale.scale_lengths
-            self.arm_length = self.np_random.uniform(_arm_length[0], _arm_length[1])
+            # arm length (volume-weighted sampling)
+            self.arm_length = self.cfg.scale.sample_arm_length(self.np_random)
             L = self.arm_length
 
             # mass
