@@ -38,16 +38,24 @@ class TrajectoryEncoder(nn.Module):
 
     def __init__(self, input_size, output_size=4):
         super(TrajectoryEncoder, self).__init__()
-        self.conv1 = nn.Conv1d(1, 16, kernel_size=3, stride=2)
-        self.conv2 = nn.Conv1d(16, 16, kernel_size=3, stride=2)
-        self.pool = nn.AdaptiveAvgPool1d(4)
-        self.linear = nn.Linear(16 * 4, output_size)
+        self.conv1 = nn.Conv1d(1, 32, kernel_size=3, stride=1)
+        self.conv2 = nn.Conv1d(32, 32, kernel_size=3, stride=1)
+        self.conv3 = nn.Conv1d(32, 32, kernel_size=3, stride=1)
+
+        with torch.no_grad():
+            x = torch.randn(1, input_size).unsqueeze(1)
+            x = torch.relu(self.conv1(x))
+            x = torch.relu(self.conv2(x))
+            x = torch.relu(self.conv3(x))
+            linear_input_dim = x.view(x.size(0), -1).shape[1]
+
+        self.linear = nn.Linear(linear_input_dim, output_size)
 
     def forward(self, x):
         x = x.unsqueeze(1)
         x = torch.relu(self.conv1(x))
         x = torch.relu(self.conv2(x))
-        x = self.pool(x)
+        x = torch.relu(self.conv3(x))
         x = x.flatten(start_dim=1)
         return self.linear(x)
 
