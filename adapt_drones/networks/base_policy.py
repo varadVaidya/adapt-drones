@@ -38,7 +38,7 @@ class TrajectoryEncoder(nn.Module):
 
     def __init__(self, input_size, output_size=16):
         super(TrajectoryEncoder, self).__init__()
-        self.n_filters = 16
+        self.n_filters = 8
         self.conv1 = nn.Conv1d(1, self.n_filters, kernel_size=3, stride=2)
         self.conv2 = nn.Conv1d(self.n_filters, self.n_filters, kernel_size=3, stride=2)
         self.attn = nn.Linear(self.n_filters, 1)
