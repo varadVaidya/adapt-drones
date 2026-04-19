@@ -252,7 +252,11 @@ class TrajAviaryv3(BaseAviary):
         )
 
         close_distance_reward = rewards.tolerance(
-            norm_position, bounds=(-isclose, isclose), margin=0.050
+            norm_position, bounds=(-isclose, isclose), margin=0.15
+        )
+
+        closest_distance_reward = rewards.tolerance(
+            norm_position, bounds=(-isclose, isclose), margin=0.05
         )
 
         velocity_reward = rewards.tolerance(
@@ -277,12 +281,13 @@ class TrajAviaryv3(BaseAviary):
 
         # weights = np.array([0.50, 0.15, 0.15, 0.15, 0.05])
         # weights = np.array([0.55, 0.175, 0.2, 0.025, 0.025, 0.025])
-        weights = np.array([0.50, 0.1625, 0.2, 0.0625, 0.0375, 0.0375])
+        weights = np.array([0.50, 0.1, 0.0625, 0.2, 0.0625, 0.0375, 0.0375])
         weights = weights / np.sum(weights)
         reward_vector = np.array(
             [
                 distance_reward,
                 close_distance_reward,
+                closest_distance_reward,
                 velocity_reward,
                 angular_velocity_reward,
                 action_reward,
@@ -296,6 +301,7 @@ class TrajAviaryv3(BaseAviary):
         self.info_reward["distance_reward"] += distance_reward
         self.info_reward["velocity_reward"] += velocity_reward
         self.info_reward["close_distance_reward"] += close_distance_reward
+        self.info_reward["closest_distance_reward"] += closest_distance_reward
         self.info_reward["action_reward"] += action_reward
         self.info_reward["angular_velocity_reward"] += angular_velocity_reward
         self.info_reward["yaw_reward"] += yaw_reward

@@ -9,11 +9,11 @@ class Learning:
     cuda: bool = True
     test: bool = False
     total_timesteps: int = 60000000
-    init_lr: float = 5e-4
+    init_lr: float = 2.5e-4
     num_envs: int = 64
     num_steps: int = 1024
     anneal_lr: bool = True
-    final_lr: float = 2.5e-4
+    final_lr: float = 2.24e-4
     gamma: float = 0.99
     gae_lambda: float = 0.95
     num_minibatches: int = 64
