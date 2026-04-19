@@ -560,6 +560,7 @@ class TrajAviaryv3(BaseAviary):
             "distance_reward": 0.0,
             "velocity_reward": 0.0,
             "close_distance_reward": 0.0,
+            "closest_distance_reward": 0.0,
             "action_reward": 0.0,
             "angular_velocity_reward": 0.0,
             "yaw_reward": 0.0,
