@@ -248,7 +248,7 @@ class TrajAviaryv3(BaseAviary):
         norm_action = np.linalg.norm(np.diff(self.action_buffer, axis=0))
 
         distance_reward = rewards.tolerance(
-            norm_position, bounds=(-isclose, isclose), margin=0.75
+            norm_position, bounds=(-isclose, isclose), margin=1.0
         )
 
         close_distance_reward = rewards.tolerance(
@@ -526,7 +526,7 @@ class TrajAviaryv3(BaseAviary):
             self.reference_trajectory = np.concatenate(
                 [t_ref.reshape(-1, 1), traj_ref], axis=1
             )
-            
+
             pos = self.reference_trajectory[:, 1:4]
             vel = self.reference_trajectory[:, 4:7]
 

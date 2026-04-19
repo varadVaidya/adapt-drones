@@ -123,7 +123,7 @@ class RMA_DATT(nn.Module):
         self.traj_encoder_input_size = traj_shape
 
         env_encoder_output_size = 4
-        traj_encoder_output_size = 32
+        traj_encoder_output_size = 16
         env_encoder_layers = [8]
 
         base_policy_input_size = (

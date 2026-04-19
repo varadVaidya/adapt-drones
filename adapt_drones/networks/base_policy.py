@@ -36,28 +36,22 @@ class TrajectoryEncoder(nn.Module):
     Each 1-D convolution has 16 filters with a kernel size of 3
     """
 
-    def __init__(self, input_size, output_size=4):
+    def __init__(self, input_size, output_size=16):
         super(TrajectoryEncoder, self).__init__()
-        self.conv1 = nn.Conv1d(1, 32, kernel_size=3, stride=1)
-        self.conv2 = nn.Conv1d(32, 32, kernel_size=3, stride=1)
-        self.conv3 = nn.Conv1d(32, 32, kernel_size=3, stride=1)
-
-        with torch.no_grad():
-            x = torch.randn(1, input_size).unsqueeze(1)
-            x = torch.relu(self.conv1(x))
-            x = torch.relu(self.conv2(x))
-            x = torch.relu(self.conv3(x))
-            linear_input_dim = x.view(x.size(0), -1).shape[1]
-
-        self.linear = nn.Linear(linear_input_dim, output_size)
+        self.n_filters = 16
+        self.conv1 = nn.Conv1d(1, self.n_filters, kernel_size=3, stride=2)
+        self.conv2 = nn.Conv1d(self.n_filters, self.n_filters, kernel_size=3, stride=2)
+        self.attn = nn.Linear(self.n_filters, 1)
+        self.out_proj = nn.Linear(self.n_filters, output_size)
 
     def forward(self, x):
         x = x.unsqueeze(1)
         x = torch.relu(self.conv1(x))
         x = torch.relu(self.conv2(x))
-        x = torch.relu(self.conv3(x))
-        x = x.flatten(start_dim=1)
-        return self.linear(x)
+        x = x.transpose(1, 2)  # (batch, seq, filters)
+        attn_weights = torch.softmax(self.attn(x), dim=1)  # (batch, seq, 1)
+        x = (x * attn_weights).sum(dim=1)  # (batch, filters)
+        return self.out_proj(x)
 
 
 class Actor(nn.Module):
