@@ -38,10 +38,10 @@ class TrajectoryEncoder(nn.Module):
 
     def __init__(self, input_size, output_size=4):
         super(TrajectoryEncoder, self).__init__()
-        self.conv1 = nn.Conv1d(1, 8, kernel_size=3, stride=2)
-        self.conv2 = nn.Conv1d(8, 8, kernel_size=3, stride=2)
+        self.conv1 = nn.Conv1d(1, 16, kernel_size=3, stride=2)
+        self.conv2 = nn.Conv1d(16, 16, kernel_size=3, stride=2)
         self.pool = nn.AdaptiveAvgPool1d(4)
-        self.linear = nn.Linear(8 * 4, output_size)
+        self.linear = nn.Linear(16 * 4, output_size)
 
     def forward(self, x):
         x = x.unsqueeze(1)
