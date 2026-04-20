@@ -16,7 +16,7 @@ from adapt_drones.utils.learning import layer_init
 class SimpleActorCritic(nn.Module):
     def __init__(self, state_shape, action_shape):
         super(SimpleActorCritic, self).__init__()
-        base_policy_layers = [8, 8]
+        base_policy_layers = [16, 16]
         base_policy_input_size = np.prod(state_shape)
 
         self.critic = Critic(base_policy_input_size, *base_policy_layers, output_size=1)
@@ -55,7 +55,7 @@ class RMA(nn.Module):
         env_encoder_layers = [8]
 
         base_policy_input_size = env_encoder_output_size + self.state_obs_shape
-        base_policy_layers = [8, 8]
+        base_policy_layers = [16, 16]
 
         actor_input = env_encoder_output_size + self.state_obs_shape
         actor_output = np.prod(action_shape)
@@ -129,7 +129,7 @@ class RMA_DATT(nn.Module):
         base_policy_input_size = (
             env_encoder_output_size + self.state_obs_shape + traj_encoder_output_size
         )
-        base_policy_layers = [8, 8]
+        base_policy_layers = [16, 16]
 
         actor_input = base_policy_input_size
         actor_output = np.prod(action_shape)

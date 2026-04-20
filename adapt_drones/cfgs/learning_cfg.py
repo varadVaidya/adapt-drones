@@ -23,7 +23,7 @@ class Learning:
     norm_adv: bool = True
     clip_coef: float = 0.2
     clip_vloss: bool = False
-    ent_coef: float = 0.0005
+    ent_coef: float = 0.002
     vf_coef: float = 0.5
     max_grad_norm: float = 0.5
     target_kl: None = None

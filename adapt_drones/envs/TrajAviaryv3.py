@@ -281,7 +281,7 @@ class TrajAviaryv3(BaseAviary):
 
         # weights = np.array([0.50, 0.15, 0.15, 0.15, 0.05])
         # weights = np.array([0.55, 0.175, 0.2, 0.025, 0.025, 0.025])
-        weights = np.array([0.50, 0.1, 0.0625, 0.2, 0.0625, 0.0375, 0.0375])
+        weights = np.array([0.40, 0.20, 0.10, 0.15, 0.0625, 0.0375, 0.05])
         weights = weights / np.sum(weights)
         reward_vector = np.array(
             [

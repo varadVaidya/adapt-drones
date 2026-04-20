@@ -38,17 +38,17 @@ class TrajectoryEncoder(nn.Module):
 
     def __init__(self, input_size, output_size=16):
         super(TrajectoryEncoder, self).__init__()
-        self.features_per_waypoint = 6
-        self.n_filters = 8
-        self.conv1 = nn.Conv1d(self.features_per_waypoint, self.n_filters, kernel_size=5, stride=2)
-        self.n_filters2 = 4
-        self.conv2 = nn.Conv1d(self.n_filters, self.n_filters2, kernel_size=5, stride=2)
-        self.attn = nn.Linear(self.n_filters2, 1)
-        self.out_proj = nn.Linear(self.n_filters2, output_size)
+        self.n_filters = 4
+        self.conv1 = nn.Conv1d(1, self.n_filters, kernel_size=3, stride=2)
+        self.conv2 = nn.Conv1d(self.n_filters, self.n_filters, kernel_size=3, stride=2)
+        self.attn = nn.Linear(self.n_filters, 1)
+        self.out_proj = nn.Linear(self.n_filters, output_size)
 
     def forward(self, x):
         n_waypoints = x.size(1) // self.features_per_waypoint
-        x = x.view(x.size(0), n_waypoints, self.features_per_waypoint)  # (batch, waypoints, 6)
+        x = x.view(
+            x.size(0), n_waypoints, self.features_per_waypoint
+        )  # (batch, waypoints, 6)
         x = x.transpose(1, 2)  # (batch, 6, waypoints)
         x = torch.relu(self.conv1(x))
         x = torch.relu(self.conv2(x))
