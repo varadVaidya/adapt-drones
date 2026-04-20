@@ -11,7 +11,7 @@ class Learning:
     total_timesteps: int = 60000000
     init_lr: float = 2.5e-4
     num_envs: int = 256
-    num_steps: int = 256
+    num_steps: int = 512
     anneal_lr: bool = True
     final_lr: float = 2.24e-4
     gamma: float = 0.99
