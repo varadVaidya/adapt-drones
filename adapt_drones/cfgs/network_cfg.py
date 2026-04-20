@@ -10,5 +10,5 @@ class Network:
     adapt_time_horizon: int = 50
 
     def __post_init__(self):
-        self.base_policy_layers = [8, 8]
+        self.base_policy_layers = [16, 16]
         self.env_encoder_layers = [8]
