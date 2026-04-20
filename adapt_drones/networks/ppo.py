@@ -97,6 +97,11 @@ def ppo_train(args: Config, envs):
 
     optimizer = optim.Adam(agent.parameters(), lr=args.learning.init_lr, eps=1e-5)
 
+    # Print the number of parameters in the model
+    num_params = sum(p.numel() for p in agent.parameters())
+    # pretty print the number of parameters
+    print(f"Number of parameters in the model: {num_params:,}")
+
     # ALGO Logic: Storage setup
     obs = torch.zeros(
         (args.learning.num_steps, args.learning.num_envs)
