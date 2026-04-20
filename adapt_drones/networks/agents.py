@@ -129,7 +129,7 @@ class RMA_DATT(nn.Module):
         base_policy_input_size = (
             env_encoder_output_size + self.state_obs_shape + traj_encoder_output_size
         )
-        base_policy_layers = [8, 8]
+        base_policy_layers = [16, 16]
 
         actor_input = base_policy_input_size
         actor_output = np.prod(action_shape)

@@ -10,16 +10,16 @@ class Learning:
     test: bool = False
     total_timesteps: int = 60000000
     init_lr: float = 2.5e-4
-    num_envs: int = 64
-    num_steps: int = 1024
+    num_envs: int = 256
+    num_steps: int = 256
     anneal_lr: bool = True
     final_lr: float = 2.24e-4
     gamma: float = 0.99
     gae_lambda: float = 0.95
-    num_minibatches: int = 64
+    num_minibatches: int = 8
     save_model: bool = True
 
-    update_epochs: int = 10
+    update_epochs: int = 5
     norm_adv: bool = True
     clip_coef: float = 0.2
     clip_vloss: bool = False
