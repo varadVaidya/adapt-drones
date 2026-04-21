@@ -4,4 +4,5 @@ from adapt_drones.envs.TrajAviaryv2 import TrajAviaryv2
 from adapt_drones.envs.TrajAviaryv3 import TrajAviaryv3
 from adapt_drones.envs.TrajAviaryv2CTBR import TrajAviaryv2CTBR
 from adapt_drones.envs.TrajAviaryv3CTBR import TrajAviaryv3CTBR
+from adapt_drones.envs.TrajObstacleAviaryv3 import TrajObstacleAviaryv3
 from adapt_drones.envs.TrajAviaryPayv3 import TrajAviaryPayv3

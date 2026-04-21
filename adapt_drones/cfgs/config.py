@@ -30,6 +30,7 @@ class Config:
         HoverAviaryv1Config,
         TrajAviaryv2Config,
         TrajAviaryv3Config,
+        TrajObstacleAviaryv3Config,
         TrajAviaryPayv3Config,
     ]
     scale: Scale
@@ -49,7 +50,7 @@ class Config:
         agent="AC",
         warm_start=False,
         warm_model=None,
-        wandb_project="adapt-test-new",
+        wandb_project="adapt-ICRA",
         **kwargs,
     ):
 
@@ -83,6 +84,7 @@ class Config:
             track=track,
             grp_name=grp_name,
             run_name=run_name,
+            wandb_project_name=wandb_project,
         )
 
         env_maps = {
@@ -92,6 +94,7 @@ class Config:
             "traj_v3": TrajAviaryv3Config,
             "traj_v2_ctbr": TrajAviaryv2CTBRConfig,
             "traj_v3_ctbr": TrajAviaryv3CTBRConfig,
+            "traj_obs_v3": TrajObstacleAviaryv3Config,
             "traj_pay_v3": TrajAviaryPayv3Config,
         }
 

@@ -28,6 +28,7 @@ class BaseAviary(gym.Env):
         ctrl_freq: int = 100,
         record: bool = False,
         camera_name: str = "trackcom",
+        xml_file=None,
     ):
         """
         Initialize the environment
@@ -52,8 +53,8 @@ class BaseAviary(gym.Env):
         self.recording_FPS = 25
         self.camera_name = camera_name
 
-        # MuJoCo modeladapt_drones
-        xml_file = pkg_resources.resource_filename("adapt_drones", "assets/quad.xml")
+        if xml_file is None:
+            xml_file = pkg_resources.resource_filename("adapt_drones", "assets/quad.xml")
 
         if not os.path.exists(xml_file):
             raise FileNotFoundError(f"File {xml_file} not found")

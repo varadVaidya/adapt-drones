@@ -225,3 +225,38 @@ class RMA_DATT(nn.Module):
         probs = Normal(action_mean, action_std)
 
         return probs.sample()
+
+
+class RMA_DATT_Safe(RMA_DATT):
+
+    def __init__(self, priv_info_shape, state_shape, traj_shape, action_shape):
+        super().__init__(priv_info_shape, state_shape, traj_shape, action_shape)
+
+        env_encoder_output_size = 4
+        traj_encoder_output_size = 16
+        cost_critic_input = env_encoder_output_size + state_shape + traj_encoder_output_size
+        base_policy_layers = [16, 16]
+
+        self.cost_critic = Critic(
+            cost_critic_input, *base_policy_layers, output_size=1
+        )
+
+    def get_cost_value(self, x):
+        env_obs = x[:, : self.priv_info_shape]
+        state_obs = x[
+            :, self.priv_info_shape : self.priv_info_shape + self.state_obs_shape
+        ]
+        traj_obs = x[:, self.priv_info_shape + self.state_obs_shape :]
+
+        env_encoder = self.env_encoder(env_obs)
+        traj_encoder = self.traj_encoder(traj_obs)
+
+        x = torch.cat((state_obs, env_encoder, traj_encoder), dim=-1)
+        return self.cost_critic(x)
+
+    def get_action_value_cost(self, x, action=None, predicted_enc=None):
+        action, logprob, entropy, value = self.get_action_and_value(
+            x, action, predicted_enc
+        )
+        cost_value = self.get_cost_value(x)
+        return action, logprob, entropy, value, cost_value

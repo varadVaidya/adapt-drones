@@ -30,6 +30,7 @@ class TrajAviaryv3(BaseAviary):
         ctrl_freq: int = 100,
         record: bool = False,
         camera_name: str = "trackcom",
+        xml_file: str = None,
     ):
         super().__init__(
             init_xyz=init_xyz,
@@ -38,6 +39,7 @@ class TrajAviaryv3(BaseAviary):
             ctrl_freq=ctrl_freq,
             record=record,
             camera_name=camera_name,
+            xml_file=xml_file,
         )
 
         self.cfg: Config = cfg

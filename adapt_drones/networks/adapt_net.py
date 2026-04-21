@@ -70,7 +70,9 @@ def adapt_train_datt_rma(cfg: Config, envs, best_model: bool = True):
     traj_shape = envs.get_attr("reference_traj_shape")[0]
     action_shape = envs.single_action_space.shape[0]
 
-    state_action_shape = state_shape + action_shape
+    # Use only core drone state (12D) for adaptation, excluding obstacle obs
+    core_state_shape = 12
+    state_action_shape = core_state_shape + action_shape
     time_horizon = cfg.network.adapt_time_horizon
 
     adapt_input = time_horizon * state_action_shape
@@ -80,10 +82,11 @@ def adapt_train_datt_rma(cfg: Config, envs, best_model: bool = True):
         device
     )
 
-    if cfg.agent != "RMA_DATT":
+    if cfg.agent not in ("RMA_DATT", "RMA_DATT_Safe"):
         raise ValueError("Agent not valid for this evaluation")
 
-    agent = RMA_DATT(
+    agent_cls = RMA_DATT_Safe if cfg.agent == "RMA_DATT_Safe" else RMA_DATT
+    agent = agent_cls(
         priv_info_shape=priv_info_shape,
         state_shape=state_shape,
         traj_shape=traj_shape,
@@ -115,7 +118,8 @@ def adapt_train_datt_rma(cfg: Config, envs, best_model: bool = True):
         with torch.no_grad():
             action = agent.get_action_and_value(ob)[0]
 
-        state_action = torch.cat((state_ob, action), dim=-1)
+        core_state_ob = state_ob[:, :core_state_shape]
+        state_action = torch.cat((core_state_ob, action), dim=-1)
         state_action_buffer = torch.cat(
             (state_action.unsqueeze(-1), state_action_buffer[:, :, :-1].clone()), dim=-1
         )
