@@ -85,13 +85,24 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
         return obs
 
     def _get_obstacle_obs(self):
-        rel_positions = []
-        for body_id in self.obstacle_body_ids:
+        rel_surface_vectors = []
+        for i, body_id in enumerate(self.obstacle_body_ids):
             obs_pos = self.data.xpos[body_id]
             rel_pos = obs_pos - self.position
-            rel_positions.append(rel_pos)
-        rel_positions = sorted(rel_positions, key=lambda p: np.linalg.norm(p))
-        return np.concatenate(rel_positions).astype(np.float32)
+            center_dist = np.linalg.norm(rel_pos)
+            radius = self.model.geom_size[self.obstacle_geom_ids[i]][0]
+
+            if center_dist > 1e-8:
+                rel_surface_vec = rel_pos * ((center_dist - radius) / center_dist)
+            else:
+                rel_surface_vec = np.zeros(3)
+
+            rel_surface_vectors.append((center_dist - radius, rel_surface_vec))
+
+        rel_surface_vectors.sort(key=lambda item: item[0])
+        return np.concatenate([vec for _, vec in rel_surface_vectors]).astype(
+            np.float32
+        )
 
     def reset(self, seed=None, options=None):
         obs, info = super().reset(seed=seed, options=options)
@@ -169,7 +180,6 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
         return False
 
     def _compute_truncated(self):
-        far_away = np.linalg.norm(self.position) > 7.5
         obstacle_collision = self._check_obstacle_collision()
 
         ground_crash = False
@@ -184,7 +194,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
                 ground_crash = True
                 break
 
-        return far_away or obstacle_collision or ground_crash
+        return obstacle_collision or ground_crash
 
     def _compute_info(self):
         info = super()._compute_info()
