@@ -24,6 +24,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
         self.obstacle_obs_shape = self.n_obstacles * 3
         self.obstacle_radius_range = cfg.environment.obstacle_radius_range
         self.danger_radius = cfg.environment.danger_radius
+        self.safe_radius = cfg.environment.safe_radius
 
         xml_file = pkg_resources.resource_filename(
             "adapt_drones", "assets/quad_obstacles.xml"
@@ -114,6 +115,13 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
         info = self._compute_info()
         return obs, info
 
+    def eval_trajectory(self, idx=None, trajectory=None):
+        outputs = super().eval_trajectory(idx=idx, trajectory=trajectory)
+        self._randomize_obstacles()
+        mujoco.mj_forward(self.model, self.data)
+        self.update_kinematic_data()
+        return outputs
+
     def _randomize_obstacles(self):
         traj_positions = self.reference_trajectory[:, 1:4]
         traj_len = len(traj_positions)
@@ -199,7 +207,10 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
     def _compute_info(self):
         info = super()._compute_info()
         min_dist = self._min_obstacle_distance()
-        info["cost"] = np.float32(1.0 if min_dist < self.danger_radius else 0.0)
+        cost = max(0.0, (self.safe_radius - min_dist) / self.safe_radius)
+        if min_dist < 0.0:
+            cost += 25.0
+        info["cost"] = np.float32(cost)
         info["min_obstacle_distance"] = np.float32(min_dist)
         info["obstacle_collision"] = np.float32(self._check_obstacle_collision())
         return info

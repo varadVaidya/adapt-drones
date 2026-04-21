@@ -58,7 +58,7 @@
     <camera name="fixed" pos="1.408 1.648 1.415" xyaxes="-0.760 0.649 0.000 -0.337 -0.394 0.855" resolution="1920 1080"
       mode="fixed"/>
     <camera name="trackcom" pos="1.408 1.648 1.415" xyaxes="-0.760 0.649 0.000 -0.337 -0.394 0.855"
-      resolution="1920 1080" mode="targetbody" target="quad"/>
+      resolution="1920 1080" mode="trackcom"/>
 
   </worldbody>
 
