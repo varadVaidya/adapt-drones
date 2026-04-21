@@ -180,7 +180,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
         return False
 
     def _compute_truncated(self):
-        obstacle_collision = self._check_obstacle_collision()
+        far_away = np.linalg.norm(self.position) > 7.5
 
         ground_crash = False
         for i in range(self.data.ncon):
@@ -194,7 +194,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
                 ground_crash = True
                 break
 
-        return obstacle_collision or ground_crash
+        return far_away or ground_crash
 
     def _compute_info(self):
         info = super()._compute_info()
