@@ -212,7 +212,7 @@ class TrajObstacleAviaryv3Config:
     obstacle_radius_range: list = None
     danger_radius: float = 0.15
     safe_radius: float = 0.5
-    cost_limit: float = 0.0
+    cost_limit: float = 0.025
 
     def __init__(self, eval, scale, wind_bool):
         self.eval = eval
