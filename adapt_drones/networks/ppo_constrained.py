@@ -131,7 +131,7 @@ def ppo_constrained_train(args: Config, envs):
     )
 
     # Lagrange multiplier — raw dual gradient descent
-    lagrange_lr = 0.01
+    lagrange_lr = 1e-3
     cost_limit = args.environment.cost_limit
     log_lagrange = torch.tensor(np.log(0.1), device=device)
 
@@ -330,7 +330,7 @@ def ppo_constrained_train(args: Config, envs):
             cost_returns = cost_advantages + cost_values
 
         # Update Lagrange multiplier
-        episode_cost = costs.mean()
+        episode_cost = costs.sum(0).mean()
         constraint_error = (episode_cost - cost_limit).item()
         log_lagrange = log_lagrange + lagrange_lr * constraint_error
         lagrange = torch.clamp(log_lagrange.exp(), min=0.0, max=100.0)
