@@ -260,6 +260,13 @@ def ppo_constrained_train(args: Config, envs):
                                     global_step,
                                 )
 
+                            if "obstacle_collision" in fi:
+                                writer.add_scalar(
+                                    "safety/obstacle_collision",
+                                    fi["obstacle_collision"],
+                                    global_step,
+                                )
+
                             plot_once_iter = False
 
         # GAE for rewards
@@ -408,9 +415,9 @@ def ppo_constrained_train(args: Config, envs):
 
                 # Cost value loss
                 new_cost_value = agent.get_cost_value(b_obs[mb_inds]).view(-1)
-                cost_v_loss = 0.5 * (
-                    (new_cost_value - b_cost_returns[mb_inds]) ** 2
-                ).mean()
+                cost_v_loss = (
+                    0.5 * ((new_cost_value - b_cost_returns[mb_inds]) ** 2).mean()
+                )
 
                 entropy_loss = entropy.mean()
                 loss = (

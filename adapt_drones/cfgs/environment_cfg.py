@@ -234,7 +234,7 @@ class TrajObstacleAviaryv3Config:
         self.wind_speed = self.wind_speed if self.wind_bool else [0.0, 0.0]
         self.max_wind = self.max_wind if self.wind_bool else 0.0
 
-        self.obstacle_radius_range = [0.1, 0.3]
+        self.obstacle_radius_range = [0.05, 0.15]
 
         trajectory_path = pkg_resources.resource_filename(
             "adapt_drones", "assets/slow_pi_tcn_train.npy"

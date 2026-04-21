@@ -106,7 +106,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
     def _randomize_obstacles(self):
         traj_positions = self.reference_trajectory[:, 1:4]
         traj_len = len(traj_positions)
-        margin = min(20, traj_len // 4)
+        margin = int(max(traj_len // 3, 50))
 
         for i in range(self.n_obstacles):
             t_idx = self.np_random.integers(margin, traj_len - margin)
@@ -162,8 +162,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
             geom1, geom2 = contact.geom1, contact.geom2
             drone_hit = geom1 in self.drone_geom_ids or geom2 in self.drone_geom_ids
             obs_hit = (
-                geom1 in self.obstacle_geom_id_set
-                or geom2 in self.obstacle_geom_id_set
+                geom1 in self.obstacle_geom_id_set or geom2 in self.obstacle_geom_id_set
             )
             if drone_hit and obs_hit:
                 return True
@@ -179,8 +178,7 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
             geom1, geom2 = contact.geom1, contact.geom2
             is_drone = geom1 in self.drone_geom_ids or geom2 in self.drone_geom_ids
             is_obstacle = (
-                geom1 in self.obstacle_geom_id_set
-                or geom2 in self.obstacle_geom_id_set
+                geom1 in self.obstacle_geom_id_set or geom2 in self.obstacle_geom_id_set
             )
             if is_drone and not is_obstacle:
                 ground_crash = True
