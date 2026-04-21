@@ -111,7 +111,37 @@ class TrajObstacleAviaryv3(TrajAviaryv3):
         for i in range(self.n_obstacles):
             t_idx = self.np_random.integers(margin, traj_len - margin)
             base_pos = traj_positions[t_idx].copy()
-            offset = self.np_random.uniform(-0.5, 0.5, 3)
+
+            # Compute local trajectory direction at this point
+            t_next = min(t_idx + 5, traj_len - 1)
+            t_prev = max(t_idx - 5, 0)
+            traj_dir = traj_positions[t_next] - traj_positions[t_prev]
+            traj_dir_norm = np.linalg.norm(traj_dir)
+            if traj_dir_norm > 1e-6:
+                traj_dir = traj_dir / traj_dir_norm
+            else:
+                traj_dir = np.array([1.0, 0.0, 0.0])
+
+            # Build perpendicular basis
+            up = np.array([0.0, 0.0, 1.0])
+            perp1 = np.cross(traj_dir, up)
+            if np.linalg.norm(perp1) < 1e-6:
+                up = np.array([0.0, 1.0, 0.0])
+                perp1 = np.cross(traj_dir, up)
+            perp1 = perp1 / np.linalg.norm(perp1)
+            perp2 = np.cross(traj_dir, perp1)
+
+            # Place obstacle perpendicular to trajectory, close enough to matter
+            # Perpendicular offset: 0.05-0.25m (close to or on the trajectory)
+            # Along-trajectory jitter: small, to avoid stacking on one point
+            perp_dist = self.np_random.uniform(0.05, 0.25)
+            perp_angle = self.np_random.uniform(0, 2 * np.pi)
+            along_jitter = self.np_random.uniform(-0.1, 0.1)
+
+            offset = (
+                perp_dist * (np.cos(perp_angle) * perp1 + np.sin(perp_angle) * perp2)
+                + along_jitter * traj_dir
+            )
             self.model.body_pos[self.obstacle_body_ids[i]] = base_pos + offset
 
             radius = self.np_random.uniform(*self.obstacle_radius_range)
