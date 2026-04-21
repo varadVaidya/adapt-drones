@@ -208,7 +208,7 @@ class TrajObstacleAviaryv3Config:
     wind_bool: bool = True
     trajectory_window: int = 100
 
-    n_obstacles: int = 5
+    n_obstacles: int = 2
     obstacle_radius_range: list = None
     danger_radius: float = 0.15
     safe_radius: float = 0.5
