@@ -1,7 +1,4 @@
 absl-py==2.1.0
--e git+https://github.com/acados/acados.git@48fae98b87433cb2e23b2029d0f211c141928bb4#egg=acados_template&subdirectory=interfaces/acados_template
--e git+https://github.com/varadVaidya/adapative-drones.git@a7acf84629f2e70e4f8ad46b85556a0bfa68c172#egg=adapative_drones
--e git+https://github.com/varadVaidya/adapt-drones.git@3ff27a39c2b1dfaac30a241586a5b948a39adfd1#egg=adapt_drones
 anyio==4.6.2.post1
 appdirs==1.4.4
 argon2-cffi==23.1.0
@@ -17,7 +14,6 @@ beautifulsoup4==4.12.3
 bitarray==2.9.2
 bitstring==4.2.3
 bleach==6.1.0
--e git+https://github.com/imbue-ai/carbs.git@8f7fee08658ad567d9dd6b6233247bc37d9962ea#egg=carbs
 casadi==3.6.6
 catkin==0.7.18
 catkin-pkg==1.0.0
